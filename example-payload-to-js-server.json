@@ -1,0 +1,3 @@
+{
+    "i1": "import time\nimport pyautogui\npyautogui.keyDown('win')\npyautogui.press('r')\npyautogui.keyUp('win')\npyautogui.write('cmd')\npyautogui.press('enter')\ntime.sleep(1)\npyautogui.write('hello world')"
+}
