@@ -17,6 +17,10 @@ function GetInstructions() {
     return parsed
 }
 
+function HandleKeyPress(key) {
+    console.log("Pressed key: " + key)
+}
+
 http.createServer(function(req, res) {
     if (req.method == "POST") {
         if (req.url == "/upload") {
@@ -37,6 +41,15 @@ http.createServer(function(req, res) {
                     }
                     res.end("Good")
                 })
+            })
+        } else if (req.url == "/keypress") {
+            let body = ""
+            req.on("data", function(chunk) {
+                body += chunk
+            })
+            req.on("end", function() {
+                HandleKeyPress(body)
+                res.end("Alr")
             })
         } else {
             let body = ""
