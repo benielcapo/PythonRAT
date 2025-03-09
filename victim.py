@@ -3,7 +3,6 @@ import json
 import time
 import subprocess
 import io
-import base64
 import pyautogui
 
 endPoint = "http://localhost:8080"
