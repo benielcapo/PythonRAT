@@ -8,6 +8,8 @@ def InstallLibraries():
         except Exception as err:
             print("error while installing library " + library + ", error: " + err)
 
+InstallLibraries()
+
 import requests
 import time
 import io
@@ -88,8 +90,6 @@ def ExecuteInstructions(instructions):
 def main():
     instructions = GetInstructions()
     ExecuteInstructions(instructions)
-
-InstallLibraries()
 
 while True:
     main()
