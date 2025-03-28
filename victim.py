@@ -1,15 +1,3 @@
-import subprocess
-requiredLibraries = ["numpy", "pyautogui", "opencv-python", "keyboard"]
-
-def InstallLibraries():
-    for library in requiredLibraries:
-        try:
-            subprocess.run("pip install " + library, shell=True)
-        except Exception as err:
-            print("error while installing library " + library + ", error: " + err)
-
-InstallLibraries()
-
 import requests
 import time
 import io
