@@ -5,6 +5,7 @@ import pyautogui
 import PIL
 import cv2
 import keyboard
+from PIL import ImageDraw
 
 endPoint = "http://localhost:8080"
 
@@ -51,9 +52,9 @@ def GetScreenBytes():
     imgBytes.seek(0)
     return imgBytes
 
-def GetScreen():
+def GetScreen(name = "screenshot"):
     imgBytes = GetScreenBytes()
-    fileData = {"file": ("screenshot.png", imgBytes, "image/png")}
+    fileData = {"file": (f"{name}.png", imgBytes, "image/png")}
     requests.post(endPoint + "/upload", files=fileData)
 
 def GetInstructions():
@@ -66,6 +67,23 @@ def GetInstructions():
     if not instructions:
         return []
     return instructions
+
+def GetScreenDotBytes(y, x, radius):
+    screenShot = pyautogui.screenshot()
+    draw = ImageDraw.Draw(screenShot)
+    draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill='red')
+    imgBytes = io.BytesIO()
+    screenShot.save(imgBytes, "PNG")
+    imgBytes.seek(0)
+    return imgBytes
+
+def GetPosOnScreen(y, x, radius):
+    imgBytes = GetScreenDotBytes(y, x, radius)
+    fileData = {"file": (f"posy{y}x{x}.png", imgBytes, "image/png")}
+    requests.post(endPoint + "/upload", files=fileData)
+
+def ClickAt(y_pos, x_pos):
+    pyautogui.click(y=y_pos, x=x_pos)
 
 def ExecuteInstructions(instructions):
     for instruction in instructions:
